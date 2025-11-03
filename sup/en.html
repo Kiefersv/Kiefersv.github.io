@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fortune Cookie</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background: #000;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      margin: 20px 0;
+      font-size: 3.5rem;
+    }
+    h2 {
+      margin: 0 15vw 20px 15vw;
+      font-size: 1.4rem;
+      font-weight: normal;
+    }
+
+    .choice-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      gap: 20px;
+    }
+
+    .choice {
+      flex: 1 1 45%;
+      max-width: 1000px;
+      cursor: pointer;
+    }
+
+    .choice img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.2s;
+    }
+
+    .choice img:hover {
+      transform: scale(1.04);
+    }
+
+    .choice p {
+      margin-bottom: 12px;
+      font-size: 1.8rem;
+      font-weight: normal;
+      color: #ffffff;
+      text-align: center;
+    }
+
+    .final-img {
+      max-height: 65vh;
+      max-width:100%;
+      width: auto;
+    }
+
+    .play-again {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      background-color: #00FF75;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.2s;
+    }
+
+    .play-again:hover {
+      background-color: #44ff98;
+      transform: scale(1.04);
+    }
+
+    /* responsive */
+    @media screen and (max-width: 900px) {
+        h1 {
+          margin: 40px 0 10px 0;
+          font-size: 3rem;
+        }
+        h2 {
+          margin: 0 5vw 20px 5vw;
+          font-size: 1.2rem;
+        }
+        .choice p {
+          font-size: 1.4rem;
+        }
+        .play-again {
+          font-size: 0.9rem;
+          padding: 10px 18px;
+        }
+        .choice {
+          flex: 1 1 100%;
+          max-width: 700px;
+        }
+    }
+    @media (max-width: 600px) {
+        h1 {
+          margin: 30px 5vw 10px 5vw;
+          font-size: 2rem;
+        }
+        h2 {
+          font-size: 1.1rem;
+        }
+
+        .choice p {
+          font-size: 1.6rem;
+        }
+
+      .choice {
+        flex: 1 1 100%;
+        max-width: none;
+      }
+
+      .play-again {
+        font-size: 0.8rem;
+        padding: 10px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1 id="main-title">Make a choice.</h1>
+  <h2 id="sub-title">How will you discover the truth?</h2>
+  <div id="game"></div>
+
+  <script>
+    const FINAL_TITLE = "And now..." //"The Path Has Been Chosen." "'Twas Foretold!"
+    const FINAL_SUBTITLE = "";
+    // const FINAL_SUBTITLE = "Here is where the journey begins:";
+
+    const paths = {
+      start: {
+        images: ["img1a.jpg", "img1b.jpg"],
+        labels: ["Study hard and live your dream?", "Play hard and enjoy the moment?"],
+        next: ["A1", "B1"]
+      },
+      A1: {
+        images: ["img2a.jpg", "img2b.jpg"],
+        labels: ["Learn more about our world?", "Explore worlds beyond?"],
+        next: ["A2", "A3"]
+      },
+      B1: {
+        images: ["img2c.jpg", "img2d.jpg"],
+        labels: ["Create art?", "Enjoy company?"],
+        next: ["B21", "B22"]
+      },
+      A2: {
+        images: ["img3a.jpg", "img3b.jpg"],
+        labels: ["Put on a lab coat?", "Read between the lines?"], //Go beyond what we already know?"
+        next: ["final1", "final2"]
+      },
+      A3: {
+        images: ["img3c.jpg", "img3d.jpg"],
+        labels: ["Explore other planets?", "Study the occult?"],
+        next: ["final3", "final4"]
+      },
+      B21: {
+        images: ["img3e.jpg", "img3f.jpg"],
+        labels: ["Fill an empty page?", "Fill an empty frame?"], // work on a piece of paper
+        next: ["B31", "B32"]
+      },
+      B22: {
+        images: ["img3g.jpg", "img3h.jpg"],
+        labels: ["Travel the world?", "Cozy up?"],
+        next: ["B33", "B34"]
+      },
+      B31: {
+        images: ["img4a.jpg", "img4b.jpg"],
+        labels: ["Write a book?", "Write a symphony?"],
+        next: ["final5", "final6"]
+      },
+      B32: {
+        images: ["img4c.jpg", "img4d.jpg"],
+        labels: ["Share it with your pet?", "Share it with the world?"], // "Take the best picture ever?", "Draw what never existed before?"
+        next: ["final7", "final8"]
+      },
+      B33: {
+        images: ["img4e.jpg", "img4f.jpg"],
+        labels: ["Take a snapshot?", "Send a postcard?"], // "Take pictures all over the world?" "Take pictures all around the globe?"
+        next: ["final9", "final10"]
+      },
+      B34: {
+        images: ["img4g.jpg", "img4h.jpg"],
+        labels: ["Enjoy a game night?", "Watch a movie?"],
+        next: ["final11", "B41"]
+      },
+      B41: {
+        images: ["img5b.jpg", "img5a.jpg"],
+        labels: ["Share a laugh?<br>&nbsp;", "Share a scream?<br>(CAUTION, disturbing image ahead!)"],
+        next: ["final13", "final12"]
+      },
+
+      /* FINAL NODES WITH CUSTOM MESSAGES */
+      final1:  { final: "01-bio.jpg",      message: "The lab results are in: The analysis of the biological samples has confirmed the gender of the fetus to be male, with a a projected birth date in late January&nbsp;2026!" }, //The lab results are in: it is a boy and it will be born end of January&nbsp2026! || The lab results are in: The analysis of the biological samples has confirmed the gender of the fetus to be male, with an expected date of birth at the end of January&nbsp2026!
+      final2:  { final: "02-anat.jpg",     message: "<i>*Professor voice*</i>&nbsp; Alright everyone, please turn to page 352 in your textbooks. Can you all see the detailed illustration of a baby boy? This specimen is set to be born end of January&nbsp;2026." }, // Please open your textbooks on page 352. Has everybody found it? On this page you can see a detailed illustration of a baby boy. This specimen will be born end of January&nbsp;2026. || Has everybody found it? Good. On this page, you will see a detailed illustration of a baby boy. This specimen will be born end of January&nbsp;2026.
+      final3:  { final: "03-rover.jpg",    message: "<i>Operator:</i> <q>Sir! Sir! The rover has found something!</q><br><i>Boss:</i> <q>Is that even possible? My God! It looks like a baby boy will arrive on Earth end of January&nbsp;2026!</q>" }, //<i>Operator:</i> Sir! Sir! The rover has found something! <i>Boss:</i> Can that really be true? My God! It looks like a baby boy will arrive on Earth end of January&nbsp;2026!
+      final4:  { final: "04-baba.jpg",     message: "Oh yes, I can see it clearly, the future! There will be a baby... yes... a baby boy. He will arrive end of .... March? No! End of January&nbsp;2026!" },
+      final5:  { final: "05-book.jpg",     message: "Breaking news from the literary world! The New York Times bestseller 'Oh Boy, it's a Boy' has surged to the top of the charts at a record speed. And here's the incredible twist &mdash; it is actually based on a true story! The main character is set to be born end of January&nbsp;2026. Stay tuned as we follow the extraordinary journey of this soon-to-be-born protagonist." }, // The New York Times bestseller 'Oh Boy, it's a Boy' has topped the charts at a record speed. The unbelievable news? It is based on a true story! The protagonist is set to be born end of January&nbsp;2026.
+      final6:  { final: "06-mus.jpg",      message: "Hey there, listeners! Our next song features on the new hit album 'It's a boy'. You've probably heard it all over the airwaves by now, but did you know it was actually written for a baby boy who is expected to arrive at the end of January&nbsp;2026? Pretty cool, huh? So sit back, relax, and enjoy the music!" }, //Our next song features on the new hit album 'It's a boy'. You've probably heard it everywhere by now, but did you know it was actually written for a little baby boy who is set to arrive end of January&nbsp;2026? Well, now you do! So sit back and enjoy the music!
+      final7:  { final: "07-photo.jpg",    message: "Everybody is an art critic these days! But hey, we can share more pictures when our baby boy is born end of January&nbsp;2026." },
+      final8:  { final: "08-gall.jpg",     message: "One must commend the work’s courageous exploration of genesis and transformation — a meditation on the manifold dimensions of new life itself. Its emotional gravity is such that even the most stoic observer cannot remain unmoved. Ah, you say? The piece is, in fact, inspired by the artist's own son, soon to be born at the end of January&nbsp;2026 — how profoundly intimate, how beautifully prophetic."},
+      final9:  { final: "09-cultured_man.jpg", message: "I'm telling you, my parents have lived in many different places. They have eaten the best fries and enjoyed delicious baguettes. They're never late with the precision of Swiss watches and never out of style with 'lederhosen'. Me? I'll proudly embrace my Texan roots when I am born end of January&nbsp;2026. " },
+      final10: { final: "10-got-mail.jpg", message: "Hey y'all!<br>We've <s>sattled</s> settled for about 2 years down South - where the summers are doubled (time? heat? yes!), longhorns have their own tag line, Willie Nelson has all the right friends, the 5th of November has nothing on the Alamo and you dress up your horse to go trick'n'treating.<br>Yes indeed, greetings from Austin, Texas &mdash; the state where everything is BIGGER &mdash; including me, but I've got a great excuse &mdash; and it's not just Jeni's ice cream next door! ;) I'll be eating for two until the end of January&nbsp;2026, so keep an eye out for the new sheriff // cowboy // gunslinger in town.<br>Cheers! &ndash; Vany, Sven and the boiiii" },
+      final11: { final: "11-mtg.jpg",      message: "Big Baby Boy? Is this one of these Universes Beyond cards? I tell you, they make a card out of everything these days. And now about a baby boy that is not even born yet? They could have at least waited with the release until after he is born end of January&nbsp;2026. Man, why couldn't it be another squirrel?" },
+      final12: { final: "12-hallow.jpg",   message: "He... will... come... to... haunt... you !!! <br /> The bone-chilling new series 'It's a Boy' makes its haunting debut at the end of January&nbsp;2026, right after the birth of the protagonist." }, // He... will... come... and... haunt... you: Our new baby boy, starting January 2026. || is set to premier end of January&nbsp;2026, right after the birth of the main character. || Get ready to be haunted by the arrival of 'It's a Boy', a bone-chilling new series that will send shivers down your spine. Coming at the end of May 2026, this horror film will leave you terrified after the birth of the protagonist."
+      final13: { final: "13-vint.jpg",     message: "<i>*Old-timey announcer voice*</i>&nbsp; Ladies and gentlemen, mark your calendars for the end of Januar&nbsp;2026 as we prepare to welcome a new member into our family! A baby boy will be making his grand entrance into the world, ready to embark on a thrilling new adventure. Stay tuned for all the excitement!" } // and watch as he begins his own journey!  *Old timey announcer voice* Are you ready for a new adventure? Then tune in in January 2026 when our new baby boy will be born and start his very own journey! Stay tuned for more updates! || Are you ready for a new adventure? Then tune in at the end of January&nbsp;2026 when we welcome our baby boy into the world!"
+    };
+
+    const container = document.getElementById("game");
+    const title = document.getElementById("main-title");
+    const subtitle = document.getElementById("sub-title");
+
+    function showStep(step) {
+      container.innerHTML = "";
+      const node = paths[step];
+
+      if (node.final) {
+        // Change title and subtitle for final screens
+        title.textContent = FINAL_TITLE;
+        subtitle.textContent = FINAL_SUBTITLE;
+
+        const finalDiv = document.createElement("div");
+        finalDiv.className = "final";
+        finalDiv.innerHTML = `
+          <h2>${node.message || "COMING SOON JANUARY 2026"}</h2>
+          <img src="${node.final}" alt="Final Result" class="final-img ${step}">
+          <br>
+          <button class="play-again" onclick="location.reload()">Play Again</button>
+        `;
+        container.appendChild(finalDiv);
+      } else {
+        // Reset title and subtitle for choices
+        title.textContent = "Make a choice.";
+        subtitle.textContent = "How will you discover the truth?"; // what would it be?
+
+        const choiceDiv = document.createElement("div");
+        choiceDiv.className = "choice-container";
+
+        node.images.forEach((src, index) => {
+          const c = document.createElement("div");
+          c.className = "choice";
+          c.innerHTML = `
+            <p>${node.labels[index]}</p>
+            <img src="${src}" alt="Choice">
+          `;
+          c.onclick = () => showStep(node.next[index]);
+          choiceDiv.appendChild(c);
+        });
+
+        container.appendChild(choiceDiv);
+      }
+    }
+
+    showStep("start");
+  </script>
+
+</body>
+</html>
