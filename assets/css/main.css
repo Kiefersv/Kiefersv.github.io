@@ -1795,7 +1795,7 @@ button.collapsible {
   /*letter-spacing: 0.075em;*/
   line-height: 1.65; /*3.5em*/
   outline: none;
-  padding: 1.2em; /*0 2.25em; oder 18px*/
+  padding: 1em 1.2em; /*0 2.25em; oder 18px*/
   text-align: left;/*center*/
   text-decoration: none;
   text-transform: none; /*uppercase*/
